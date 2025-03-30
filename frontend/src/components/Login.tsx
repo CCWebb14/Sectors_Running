@@ -6,24 +6,19 @@ const Login: React.FC = () => {
   //const [isSignup, setIsSignup] = useState<boolean>(false); // Toggle between login and signup
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>(""); 
   const { isLoggedIn, login, logout, profile } = useAuth();
-  
   
   const today = new Date();
   const formattedDate = today.toLocaleDateString()
 
 
-    const [isSignUp, setIsSignUp] = useState(false); // Toggles between login and sign-up
+  const [isSignUp, setIsSignUp] = useState(false); // Toggles between login and sign-up
     
-    const { setProfile } = useAuth(); // Get setProfile from the context
-    const [formData, setFormData] = useState<ProfileProps>({
-      name: "",
-      photoUrl: "",
+  const { setProfile } = useAuth(); // Get setProfile from the context
+  const [formData, setFormData] = useState({
       username: "",
-      memberSince: "",
-      distanceTravelled: 0,
-      team: "",
+      password: "",
     });
 
     const profileData = {
@@ -50,14 +45,15 @@ const Login: React.FC = () => {
     };
   
   
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      console.log(isSignUp ? "Sign Up Data:" : "Login Data:", formData);
-      login();
-      setProfile(formData); // Save profile data globally in the context
-      console.log("Profile saved to Auth Context:", formData);
-
-      // Handle form submission (e.g., call an API)
+      try {
+        await login({ userId: formData.username, password: formData.password });
+        console.log("Login successful!");
+      } catch (err: any) {
+        setError(err.message);
+        console.error("Login error:", err);
+      }
     };
   
     return (
